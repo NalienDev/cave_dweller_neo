@@ -14,15 +14,21 @@ import de.cadentem.cave_dweller.registry.ModSounds;
 import de.cadentem.cave_dweller.util.Timer;
 import de.cadentem.cave_dweller.util.Utils;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.SpawnUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.WallTorchBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LayerLightEventListener;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -136,7 +142,6 @@ public class CaveDweller {
 
         for (ServerLevel level : levels) {
             String key = level.dimension().location().toString();
-
             if (TIMERS.get(key) != null) {
                 handleLogic(level);
             }
@@ -218,8 +223,38 @@ public class CaveDweller {
                 NetworkHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new CaveSound(soundLocation, currentVictim.blockPosition(), 2.0F, 1.0F));
             }
         });
-
         timer.resetNoiseTimer();
+
+        // Extinguish torches
+        int range = ServerConfig.TORCH_EXTINGUISH_RANGE.get();
+        if ( !(timer.currentVictim.level() instanceof ServerLevel level) ) {
+            return;
+        }
+
+        blowTorches(level, timer.currentVictim.blockPosition(), range);
+    }
+
+    public void blowTorches(ServerLevel level, BlockPos pos, int range) {
+        int halfRange = (range/2);
+        BlockPos basePos = pos.offset(-halfRange, -halfRange, -halfRange);
+        for(int x = 0; x < range; x++) {
+            for(int y = 0; y < range; y++) {
+                for(int z = 0; z < range; z++) {
+                    BlockPos cur = basePos.offset(x,y,z);
+                    BlockState state = level.getBlockState(cur);
+                    BlockState newState;
+                    if ( state.is(Blocks.TORCH) ) {
+                        newState = ModBlocks.BLOWN_TORCH.get().defaultBlockState();
+                    } else if ( state.is(Blocks.WALL_TORCH) ) {
+                        newState = ModBlocks.BLOWN_TORCH_WALL.get().defaultBlockState().setValue(WallTorchBlock.FACING, state.getValue(WallTorchBlock.FACING));
+                    } else {
+                        continue;
+                    }
+                    level.playSound(null, cur, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS);
+                    level.setBlock(cur, newState, 1|2);
+                }
+            }
+        }
     }
 
     private boolean isRelevantPlayer(final ServerPlayer player) {

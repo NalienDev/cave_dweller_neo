@@ -65,6 +65,9 @@ public class ServerConfig {
     // Misc
     public static ForgeConfigSpec.BooleanValue ONLY_PLAY_NOISE_TO_TARGET;
 
+    // New
+    public static ForgeConfigSpec.IntValue TORCH_EXTINGUISH_RANGE;
+
     static {
         BUILDER.push("Timers");
         BUILDER.push("Spawn");
@@ -111,6 +114,7 @@ public class ServerConfig {
         BREAK_DOOR_TIME = BUILDER.comment("Time (in seconds) it takes the Cave Dweller to break down a door").defineInRange("break_door_time", 3, 1, 60);
         ALLOW_RIDING = BUILDER.comment("Allow the Cave Dweller to follow vanilla riding logic (e.g. boats)").define("allow_riding", false);
         TARGET_INVISIBLE = BUILDER.comment("Whether invisible players can be targets or not").define("target_invisible", true);
+        TORCH_EXTINGUISH_RANGE = BUILDER.comment("The range from the player that torches will be extinguished").defineInRange("torch_extinguish_range", 10, 5, 100);
         BUILDER.pop();
 
         BUILDER.push("Attributes");

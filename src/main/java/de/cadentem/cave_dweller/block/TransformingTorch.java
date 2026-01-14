@@ -4,6 +4,8 @@ import de.cadentem.cave_dweller.CaveDweller;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.TorchBlock;
@@ -26,5 +28,6 @@ public class TransformingTorch extends TorchBlock {
 
     private void transform(BlockState state, ServerLevel level, BlockPos pos) {
         level.setBlock(pos, target.defaultBlockState(), 1 | 2);
+        level.playSound(null, pos, SoundEvents.FIRECHARGE_USE, SoundSource.BLOCKS);
     }
 }
