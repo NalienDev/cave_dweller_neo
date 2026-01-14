@@ -1,0 +1,5 @@
+// 1.20.1	2026-01-14T17:05:31.859311503	Block States: cave_dweller
+fefba20b66731cb8a6ed908bbcdef554a19179c0 assets/cave_dweller/blockstates/blown_torch.json
+faf67c0b0a3483f3860e93457d8867458d8775e4 assets/cave_dweller/blockstates/cinder_torch.json
+9545731a36b8df0b9ea05231522f4f200637e9d3 assets/cave_dweller/models/block/blown_torch.json
+7036dfc7eb2702b87bcf77bb372741eeecbc2092 assets/cave_dweller/models/block/cinder_torch.json
