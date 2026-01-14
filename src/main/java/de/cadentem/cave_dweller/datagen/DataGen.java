@@ -23,5 +23,6 @@ public class DataGen {
 
         generator.addProvider(event.includeClient(), new ModItemModelProvider(generator.getPackOutput(), CaveDweller.MODID, existingFileHelper));
         generator.addProvider(event.includeServer(), new ModBiomeTagsProvider(generator.getPackOutput(), registries, CaveDweller.MODID, existingFileHelper));
+        generator.addProvider(event.includeClient(), new BlockModelProvider(generator.getPackOutput(), existingFileHelper));
     }
 }

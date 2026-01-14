@@ -7,6 +7,7 @@ import de.cadentem.cave_dweller.config.ServerConfig;
 import de.cadentem.cave_dweller.entities.CaveDwellerEntity;
 import de.cadentem.cave_dweller.network.CaveSound;
 import de.cadentem.cave_dweller.network.NetworkHandler;
+import de.cadentem.cave_dweller.registry.ModBlocks;
 import de.cadentem.cave_dweller.registry.ModEntityTypes;
 import de.cadentem.cave_dweller.registry.ModItems;
 import de.cadentem.cave_dweller.registry.ModSounds;
@@ -66,6 +67,7 @@ public class CaveDweller {
 
         ModItems.register(modEventBus);
         ModSounds.register(modEventBus);
+        ModBlocks.register(modEventBus);
         ModEntityTypes.register(modEventBus);
 
         MinecraftForge.EVENT_BUS.register(this);

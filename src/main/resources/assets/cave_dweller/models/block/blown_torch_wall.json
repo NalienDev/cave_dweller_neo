@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/template_torch_wall",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "torch": "cave_dweller:block/blown_torch"
+  }
+}
