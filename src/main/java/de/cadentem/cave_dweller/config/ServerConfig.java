@@ -54,6 +54,8 @@ public class ServerConfig {
     public static ForgeConfigSpec.IntValue BREAK_DOOR_TIME;
     public static ForgeConfigSpec.BooleanValue ALLOW_RIDING;
     public static ForgeConfigSpec.BooleanValue TARGET_INVISIBLE;
+    public static ForgeConfigSpec.IntValue DISAPPEAR_ON_HIT_CHANCE;
+
 
     // Attributes
     public static ForgeConfigSpec.DoubleValue MAX_HEALTH;
@@ -115,6 +117,7 @@ public class ServerConfig {
         ALLOW_RIDING = BUILDER.comment("Allow the Cave Dweller to follow vanilla riding logic (e.g. boats)").define("allow_riding", false);
         TARGET_INVISIBLE = BUILDER.comment("Whether invisible players can be targets or not").define("target_invisible", true);
         TORCH_EXTINGUISH_RANGE = BUILDER.comment("The range from the player that torches will be extinguished").defineInRange("torch_extinguish_range", 10, 5, 100);
+        DISAPPEAR_ON_HIT_CHANCE = BUILDER.comment("The chance the dweller will disappear when chasing and hitting the player (1 in X). 0 disables this").defineInRange("hit_disappear_chance", 4, 1, 100);
         BUILDER.pop();
 
         BUILDER.push("Attributes");

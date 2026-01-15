@@ -89,7 +89,7 @@ public class CaveDwellerStareGoal extends Goal {
             caveDweller.setDeltaMovement(Vec3.ZERO);
         }
 
-        caveDweller.getLookControl().setLookAt(target);
+        caveDweller.getLookControl().setLookAt(target.getX(), target.getY(), target.getZ(), 5, 20);
         wasNotLookingPreviously = !actuallyLooking;
     }
 }

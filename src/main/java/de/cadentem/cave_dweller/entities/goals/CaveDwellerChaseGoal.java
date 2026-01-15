@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.pathfinder.Path;
 
 import java.util.EnumSet;
+import java.util.Random;
 
 public class CaveDwellerChaseGoal extends Goal {
     private final CaveDwellerEntity caveDweller;
@@ -211,7 +212,16 @@ public class CaveDwellerChaseGoal extends Goal {
         if (distanceToTarget <= attackReach && ticksUntilNextAttack <= 0) {
             resetAttackCooldown();
             caveDweller.swing(InteractionHand.MAIN_HAND);
-            caveDweller.doHurtTarget(target);
+            if(caveDweller.doHurtTarget(target)) {
+                // TODO Option B (recommended): one-hit then vanish to keep fear high and deaths low.
+                //  should it really be just one hit? that doesn't feel right
+                int chance = ServerConfig.DISAPPEAR_ON_HIT_CHANCE.get();
+                if ( chance > 0 ) {
+                    if ( (new Random(chance).nextInt() == 0) ) {
+                        this.caveDweller.disappear();
+                    }
+                }
+            }
         }
     }
 
