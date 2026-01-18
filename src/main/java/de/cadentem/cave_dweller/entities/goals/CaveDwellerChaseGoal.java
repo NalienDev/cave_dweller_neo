@@ -1,5 +1,6 @@
 package de.cadentem.cave_dweller.entities.goals;
 
+import de.cadentem.cave_dweller.CaveDweller;
 import de.cadentem.cave_dweller.config.ServerConfig;
 import de.cadentem.cave_dweller.entities.CaveDwellerEntity;
 import de.cadentem.cave_dweller.util.Utils;
@@ -213,13 +214,9 @@ public class CaveDwellerChaseGoal extends Goal {
             resetAttackCooldown();
             caveDweller.swing(InteractionHand.MAIN_HAND);
             if(caveDweller.doHurtTarget(target)) {
-                // TODO Option B (recommended): one-hit then vanish to keep fear high and deaths low.
-                //  should it really be just one hit? that doesn't feel right
-                int chance = ServerConfig.DISAPPEAR_ON_HIT_CHANCE.get();
-                if ( chance > 0 ) {
-                    if ( (new Random(chance).nextInt() == 0) ) {
-                        this.caveDweller.disappear();
-                    }
+                if ( caveDweller.shouldDisappearOnHit()) {
+                    CaveDweller.LOG.debug("DISAPPEARING FROM HIT!");
+                    this.caveDweller.disappear();
                 }
             }
         }

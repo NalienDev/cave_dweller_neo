@@ -1,5 +1,6 @@
 package de.cadentem.cave_dweller.entities;
 
+import de.cadentem.cave_dweller.CaveDweller;
 import de.cadentem.cave_dweller.config.ServerConfig;
 import de.cadentem.cave_dweller.entities.goals.*;
 import de.cadentem.cave_dweller.network.CaveSound;
@@ -9,6 +10,7 @@ import de.cadentem.cave_dweller.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -77,17 +79,26 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
     private boolean alreadyPlayedSpottedSound;
     private boolean startedPlayingChaseSound;
     private boolean alreadyPlayedDeathSound;
+    private boolean disappearOnChaseHit;
 
     public CaveDwellerEntity(final EntityType<? extends CaveDwellerEntity> entityType, final Level level) {
         super(entityType, level);
         this.refreshDimensions();
         this.ticksTillRemove = Utils.secondsToTicks(ServerConfig.TIME_UNTIL_LEAVE.get());
         this.setPathfindingMalus(BlockPathTypes.UNPASSABLE_RAIL, 0.0f);
+        int chance = ServerConfig.DISAPPEAR_ON_HIT_CHANCE.get();
+        if ( chance > 0 ) {
+            this.disappearOnChaseHit = CaveDweller.RANDOM.nextInt(chance) == 0;
+        } else {
+            this.disappearOnChaseHit = false;
+        }
     }
 
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
+
+        CaveDweller.LOG.debug("disappear on hit: {}", this.disappearOnChaseHit);
 
         setAttribute(getAttribute(Attributes.MAX_HEALTH), ServerConfig.MAX_HEALTH.get());
         setAttribute(getAttribute(Attributes.ATTACK_DAMAGE), ServerConfig.ATTACK_DAMAGE.get());
@@ -152,6 +163,7 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
     }
 
     public void disappear() {
+        playDisappearParticles();
         playDisappearSound();
         discard();
     }
@@ -422,6 +434,13 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
         }
     }
 
+    public void playDisappearParticles() {
+        if ( this.level() instanceof ServerLevel level ) {
+            BlockPos pos = this.blockPosition();
+            level.sendParticles(ParticleTypes.LARGE_SMOKE,   pos.getX(), pos.getY(), pos.getZ(), 300, 0.1, 2, 0.1, 0.3);
+        }
+    }
+
     public void playDisappearSound() {
         playBlockPosSound(ModSounds.DISAPPEAR.get().getLocation(), 3.0F, 1.0F);
     }
@@ -575,5 +594,10 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
     @Override
     protected float getSoundVolume() {
         return 0.4F;
+    }
+
+    public boolean shouldDisappearOnHit() {
+        CaveDweller.LOG.debug("CHECKED DIS: {}", this.disappearOnChaseHit);
+        return this.disappearOnChaseHit;
     }
 }
