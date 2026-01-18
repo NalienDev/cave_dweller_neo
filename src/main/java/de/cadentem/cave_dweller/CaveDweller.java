@@ -147,7 +147,6 @@ public class CaveDweller {
             }
         }
     }
-
     private void handleLogic(final ServerLevel level) {
         if (level == null) {
             return;
@@ -177,9 +176,15 @@ public class CaveDweller {
 
         timer.currentSpawn++;
         timer.currentNoise++;
+        timer.currentStep++;
 
         if (timer.isNoiseTimerReached() && (caveDwellerCount.get() > 0 || timer.currentSpawn >= Utils.secondsToTicks(ServerConfig.CAN_SPAWN_MAX.get()) / 2)) {
             playCaveSoundToSpelunkers(players, timer);
+        }
+
+        if ( (timer.isStepTimerReached() && timer.currentVictim != null) ) {
+            level.playSound(null, timer.currentVictim.blockPosition(), CaveDwellerEntity.chooseStep(), SoundSource.HOSTILE);
+            timer.resetStepTimer();
         }
 
         if (timer.isSpawnTimerReached() && caveDwellerCount.get() < ServerConfig.MAXIMUM_AMOUNT.get()) {
@@ -306,13 +311,14 @@ public class CaveDweller {
         return true;
     }
 
-    public static boolean speedUpTimers(final String key, int spawnDelta, int noiseDelta) {
+    public static boolean speedUpTimers(final String key, int spawnDelta, int noiseDelta, int stepDelta) {
         Timer timer = TIMERS.get(key);
         CaveDweller.LOG.debug("Speeding up timers for the dimension [{}], timer: [{}]", key, timer);
 
         if (timer != null) {
             timer.currentSpawn += spawnDelta;
             timer.currentNoise += noiseDelta;
+            timer.currentStep += stepDelta;
             return true;
         }
 
@@ -334,6 +340,10 @@ public class CaveDweller {
                 case "noise" -> {
                     current = timer.currentNoise;
                     target = timer.targetNoise;
+                }
+                case "step" -> {
+                    current = timer.currentStep;
+                    target = timer.targetStep;
                 }
             }
         }

@@ -24,6 +24,8 @@ public class ServerConfig {
     // Noise
     public static ForgeConfigSpec.IntValue RESET_NOISE_MIN;
     public static ForgeConfigSpec.IntValue RESET_NOISE_MAX;
+    public static ForgeConfigSpec.IntValue RESET_STEP_MIN;
+    public static ForgeConfigSpec.IntValue RESET_STEP_MAX;
     // Leave
     public static ForgeConfigSpec.IntValue TIME_UNTIL_LEAVE;
     public static ForgeConfigSpec.IntValue TIME_UNTIL_LEAVE_CHASE;
@@ -81,6 +83,8 @@ public class ServerConfig {
         BUILDER.push("Noise");
         RESET_NOISE_MIN = BUILDER.comment("Minimum time between noise occurrences in seconds").defineInRange("reset_noise_min", 240, 0, 60 * 60 * 24);
         RESET_NOISE_MAX = BUILDER.comment("Maximum time between noise occurrences in seconds").defineInRange("reset_noise_max", 360, 0, 60 * 60 * 24);
+        RESET_STEP_MIN = BUILDER.comment("Minimum time between step noises in seconds").defineInRange("reset_step_min", 240, 0, 60 * 60 * 24);
+        RESET_STEP_MAX = BUILDER.comment("Maximum time between step noises in seconds").defineInRange("reset_step_max", 360, 0, 60*60*24);
         BUILDER.pop();
         BUILDER.push("Leave");
         TIME_UNTIL_LEAVE = BUILDER.comment("Time (in seconds) it takes for the Cave Dweller to leave").defineInRange("time_until_leave", 300, 1, 6000);

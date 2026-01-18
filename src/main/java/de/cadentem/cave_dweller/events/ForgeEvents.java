@@ -52,7 +52,8 @@ public class ForgeEvents {
                             if (ServerConfig.isValidDimension(key)) {
                                 int spawnDelta = (int) (ServerConfig.CAN_SPAWN_MIN.get() * 0.3);
                                 int noiseDelta = (int) (ServerConfig.RESET_NOISE_MIN.get() * 0.3);
-                                CaveDweller.speedUpTimers(key, spawnDelta, noiseDelta);
+                                int stepDelta = (int) (ServerConfig.RESET_STEP_MIN.get() * 0.3);
+                                CaveDweller.speedUpTimers(key, spawnDelta, noiseDelta, stepDelta);
                             }
 
                             caveDweller.disappear();
@@ -93,12 +94,14 @@ public class ForgeEvents {
                 .then(Commands.argument("dimension", DimensionArgument.dimension())
                         .then(Commands.argument("spawn_delta_ticks", IntegerArgumentType.integer())
                                 .then(Commands.argument("noise_delta_ticks", IntegerArgumentType.integer())
+                                        .then(Commands.argument("step_delta_ticks", IntegerArgumentType.integer())
                                         .executes(context -> {
                                             String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
                                             int spawnDelta = IntegerArgumentType.getInteger(context, "spawn_delta_ticks");
                                             int noiseDelta = IntegerArgumentType.getInteger(context, "noise_delta_ticks");
+                                            int stepDelta = IntegerArgumentType.getInteger(context, "step_delta_ticks");
 
-                                            boolean wasSuccessful = CaveDweller.speedUpTimers(dimension, spawnDelta, noiseDelta);
+                                            boolean wasSuccessful = CaveDweller.speedUpTimers(dimension, spawnDelta, noiseDelta, stepDelta);
 
                                             if (wasSuccessful) {
                                                 context.getSource().sendSuccess(() -> Component.literal("Server configuration has been reloaded"), true);
@@ -107,7 +110,7 @@ public class ForgeEvents {
                                             }
 
                                             return 1;
-                                        })
+                                        }))
                                 )
                         )
                 )
@@ -132,7 +135,7 @@ public class ForgeEvents {
 
         builder.then(Commands.literal("get_timer")
                 .then(Commands.argument("dimension", DimensionArgument.dimension())
-                        .then(Commands.argument("type", StringArgumentType.string()).suggests((context, suggestionsBuilder) -> SharedSuggestionProvider.suggest(new String[]{"spawn", "noise"}, suggestionsBuilder))
+                        .then(Commands.argument("type", StringArgumentType.string()).suggests((context, suggestionsBuilder) -> SharedSuggestionProvider.suggest(new String[]{"spawn", "noise", "step"}, suggestionsBuilder))
                                 .executes(context -> {
                                     String dimension = DimensionArgument.getDimension(context, "dimension").dimension().location().toString();
                                     String type = StringArgumentType.getString(context, "type");

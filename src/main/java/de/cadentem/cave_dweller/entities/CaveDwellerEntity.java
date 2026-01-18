@@ -450,7 +450,7 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
         chaseSoundClock = Utils.secondsToTicks(5);
     }
 
-    private SoundEvent chooseStep() {
+    public static SoundEvent chooseStep() {
         Random rand = new Random();
 
         return switch (rand.nextInt(4)) {

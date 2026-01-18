@@ -13,15 +13,25 @@ public class Timer {
     public int currentNoise;
     public int targetSpawn;
     public int targetNoise;
+    public int targetStep;
+    public int currentStep;
 
     public Timer() {
         resetSpawnTimer();
         resetNoiseTimer();
+        resetStepTimer();
     }
 
     public Timer(@Nullable final Entity currentVictim) {
         super();
         this.currentVictim = currentVictim;
+    }
+
+    public boolean isStepTimerReached() {
+        if ( Utils.isOnSurface(currentVictim) ) {
+            return currentStep >= (int) (targetStep * ServerConfig.SURFACE_TIMER_MULTIPLIER.get());
+        }
+        return currentStep >= targetStep;
     }
 
     public boolean isSpawnTimerReached() {
@@ -38,6 +48,29 @@ public class Timer {
         }
 
         return currentNoise >= targetNoise;
+    }
+
+    int stepsPlayed = 3;
+    public void resetStepTimer() {
+        if( stepsPlayed < 3 ) {
+            stepsPlayed++;
+            currentStep = targetStep - 10;
+            return;
+        }
+        stepsPlayed = 0;
+        int min = ServerConfig.RESET_STEP_MIN.get();
+        int max = ServerConfig.RESET_STEP_MAX.get();
+        if (max < min) {
+            int temp = min;
+            min = max;
+            max = temp;
+
+            CaveDweller.LOG.error("Configuration for `RESET_STEP` was wrong - max [{}] was smaller than min [{}] - values have been switched to prevent a crash", max, min);
+        }
+        int noiseTimer = CaveDweller.RANDOM.nextInt(Utils.secondsToTicks(min), Utils.secondsToTicks(max + 1));
+
+        currentStep = 0;
+        targetStep = noiseTimer;
     }
 
     public void resetNoiseTimer() {
@@ -85,6 +118,6 @@ public class Timer {
     @Override
     public String toString() {
         String name = currentVictim != null ? currentVictim.getName().getString() : "NONE";
-        return name + " | " + currentSpawn + "/" + targetSpawn + " | " + currentNoise + "/" + targetNoise;
+        return String.format("%s | %d/%d | %d/%d | %d/%d", name, currentSpawn, targetSpawn, currentNoise, targetNoise, currentStep, targetStep);
     }
 }
