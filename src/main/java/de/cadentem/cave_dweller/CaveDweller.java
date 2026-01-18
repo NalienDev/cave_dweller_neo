@@ -174,17 +174,28 @@ public class CaveDweller {
             }
         });
 
-        timer.currentSpawn++;
+        timer.currentEvent++;
         timer.currentNoise++;
-        timer.currentStep++;
+        timer.currentSpawn++;
 
         if (timer.isNoiseTimerReached() && (caveDwellerCount.get() > 0 || timer.currentSpawn >= Utils.secondsToTicks(ServerConfig.CAN_SPAWN_MAX.get()) / 2)) {
-            playCaveSoundToSpelunkers(players, timer);
+            if (caveDwellerCount.get() > 0) {
+                playCaveSoundToSpelunkers(players, timer);
+            } else {
+                // TODO Jumpscare
+            }
+
         }
 
-        if ( (timer.isStepTimerReached() && timer.currentVictim != null) ) {
-            level.playSound(null, timer.currentVictim.blockPosition(), CaveDwellerEntity.chooseStep(), SoundSource.HOSTILE);
-            timer.resetStepTimer();
+        if ( (timer.currentEventTimeReached() && timer.currentVictim != null) ) {
+            if (new Random().nextInt(2) == 0) {
+                timer.canStep = true;
+                level.playSound(null, timer.currentVictim.blockPosition(), CaveDwellerEntity.chooseStep(), SoundSource.HOSTILE);
+                timer.resetEventTimer();
+            } else {
+                // TODO Breathing sounds
+            }
+
         }
 
         if (timer.isSpawnTimerReached() && caveDwellerCount.get() < ServerConfig.MAXIMUM_AMOUNT.get()) {
@@ -207,6 +218,7 @@ public class CaveDweller {
                 }
             }
         }
+
     }
 
     private void playCaveSoundToSpelunkers(final List<ServerPlayer> players, final Timer timer) {
@@ -311,14 +323,14 @@ public class CaveDweller {
         return true;
     }
 
-    public static boolean speedUpTimers(final String key, int spawnDelta, int noiseDelta, int stepDelta) {
+    public static boolean speedUpTimers(final String key, int spawnDelta, int noiseDelta, int eventDelta) {
         Timer timer = TIMERS.get(key);
         CaveDweller.LOG.debug("Speeding up timers for the dimension [{}], timer: [{}]", key, timer);
 
         if (timer != null) {
             timer.currentSpawn += spawnDelta;
             timer.currentNoise += noiseDelta;
-            timer.currentStep += stepDelta;
+            timer.currentEvent += eventDelta;
             return true;
         }
 
@@ -341,9 +353,9 @@ public class CaveDweller {
                     current = timer.currentNoise;
                     target = timer.targetNoise;
                 }
-                case "step" -> {
-                    current = timer.currentStep;
-                    target = timer.targetStep;
+                case "event" -> {
+                    current = timer.currentEvent;
+                    target = timer.targetEvent;
                 }
             }
         }

@@ -9,29 +9,23 @@ import javax.annotation.Nullable;
 public class Timer {
     @Nullable
     public Entity currentVictim;
+    public int currentEvent;
+    public int targetEvent;
+    public boolean canStep;
     public int currentSpawn;
     public int currentNoise;
     public int targetSpawn;
     public int targetNoise;
-    public int targetStep;
-    public int currentStep;
 
     public Timer() {
         resetSpawnTimer();
         resetNoiseTimer();
-        resetStepTimer();
+        resetEventTimer();
     }
 
     public Timer(@Nullable final Entity currentVictim) {
         super();
         this.currentVictim = currentVictim;
-    }
-
-    public boolean isStepTimerReached() {
-        if ( Utils.isOnSurface(currentVictim) ) {
-            return currentStep >= (int) (targetStep * ServerConfig.SURFACE_TIMER_MULTIPLIER.get());
-        }
-        return currentStep >= targetStep;
     }
 
     public boolean isSpawnTimerReached() {
@@ -50,28 +44,47 @@ public class Timer {
         return currentNoise >= targetNoise;
     }
 
+    public boolean currentEventTimeReached() {
+        if (Utils.isOnSurface(currentVictim)) {
+            return currentEvent >= (int) (targetEvent * ServerConfig.SURFACE_TIMER_MULTIPLIER.get());
+        }
+
+        return currentEvent >= targetEvent;
+    }
+
     int stepsPlayed = 3;
-    public void resetStepTimer() {
-        if( stepsPlayed < 3 ) {
+    private boolean checkSteps() {
+        if( stepsPlayed < 3 && canStep) {
             stepsPlayed++;
-            currentStep = targetStep - 10;
-            return;
+            currentEvent = targetEvent - 10;
+            return false;
         }
         stepsPlayed = 0;
-        int min = ServerConfig.RESET_STEP_MIN.get();
-        int max = ServerConfig.RESET_STEP_MAX.get();
+        canStep = false;
+        return true;
+    }
+
+    public void resetEventTimer() {
+        if( !checkSteps() ) {
+            return;
+        }
+        int min = ServerConfig.RESET_EVENT_MIN.get();
+        int max = ServerConfig.RESET_EVENT_MAX.get();
+
         if (max < min) {
             int temp = min;
             min = max;
             max = temp;
 
-            CaveDweller.LOG.error("Configuration for `RESET_STEP` was wrong - max [{}] was smaller than min [{}] - values have been switched to prevent a crash", max, min);
+            CaveDweller.LOG.error("Configuration for `RESET_EVENT` was wrong - max [{}] was smaller than min [{}] - values have been switched to prevent a crash", max, min);
         }
-        int noiseTimer = CaveDweller.RANDOM.nextInt(Utils.secondsToTicks(min), Utils.secondsToTicks(max + 1));
 
-        currentStep = 0;
-        targetStep = noiseTimer;
+        int eventTimer = CaveDweller.RANDOM.nextInt(Utils.secondsToTicks(min), Utils.secondsToTicks(max + 1));
+
+        currentEvent = 0;
+        targetEvent = eventTimer;
     }
+
 
     public void resetNoiseTimer() {
         int min = ServerConfig.RESET_NOISE_MIN.get();
@@ -118,6 +131,9 @@ public class Timer {
     @Override
     public String toString() {
         String name = currentVictim != null ? currentVictim.getName().getString() : "NONE";
-        return String.format("%s | %d/%d | %d/%d | %d/%d", name, currentSpawn, targetSpawn, currentNoise, targetNoise, currentStep, targetStep);
+        return String.format("%s | %d/%d | %d/%d | %d/%d", name, currentSpawn, targetSpawn, currentNoise, targetNoise, currentEvent, targetEvent);
     }
+
+
+
 }

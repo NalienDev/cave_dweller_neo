@@ -52,8 +52,8 @@ public class ForgeEvents {
                             if (ServerConfig.isValidDimension(key)) {
                                 int spawnDelta = (int) (ServerConfig.CAN_SPAWN_MIN.get() * 0.3);
                                 int noiseDelta = (int) (ServerConfig.RESET_NOISE_MIN.get() * 0.3);
-                                int stepDelta = (int) (ServerConfig.RESET_STEP_MIN.get() * 0.3);
-                                CaveDweller.speedUpTimers(key, spawnDelta, noiseDelta, stepDelta);
+                                int eventDelta = (int) (ServerConfig.RESET_EVENT_MIN.get() * 0.3);
+                                CaveDweller.speedUpTimers(key, spawnDelta, noiseDelta, eventDelta);
                             }
 
                             caveDweller.disappear();
