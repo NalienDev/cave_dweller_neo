@@ -13,6 +13,7 @@ import de.cadentem.cave_dweller.registry.ModItems;
 import de.cadentem.cave_dweller.registry.ModSounds;
 import de.cadentem.cave_dweller.util.Timer;
 import de.cadentem.cave_dweller.util.Utils;
+import de.cadentem.cave_dweller.util.taskscheduler.TaskScheduler;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +27,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,6 +59,7 @@ public class CaveDweller {
     public static final String MODID = "cave_dweller";
     public static final Logger LOG = LogUtils.getLogger();
     public static final Random RANDOM = new Random();
+    public static final TaskScheduler TASKS = new TaskScheduler();
 
     private static final HashMap<String, Timer> TIMERS = new HashMap<>();
 
@@ -178,23 +181,49 @@ public class CaveDweller {
         timer.currentNoise++;
         timer.currentSpawn++;
 
-        if (timer.isNoiseTimerReached() && (caveDwellerCount.get() > 0 || timer.currentSpawn >= Utils.secondsToTicks(ServerConfig.CAN_SPAWN_MAX.get()) / 2)) {
+        if (timer.isNoiseTimerReached()) {
             if (caveDwellerCount.get() > 0) {
                 playCaveSoundToSpelunkers(players, timer);
-            } else {
-                // TODO Jumpscare
+                timer.resetNoiseTimer();
+            } else if (timer.currentSpawn >= Utils.secondsToTicks(ServerConfig.CAN_SPAWN_MAX.get()) / 2){
+                if (new Random().nextInt(2) == 0) {
+                    playCaveSoundToSpelunkers(players, timer);
+                    timer.resetNoiseTimer();
+                } else {
+                    // TODO Jumpscare
+                }
             }
-
         }
 
         if ( (timer.currentEventTimeReached() && timer.currentVictim != null) ) {
-            if (new Random().nextInt(2) == 0) {
-                timer.canStep = true;
-                level.playSound(null, timer.currentVictim.blockPosition(), CaveDwellerEntity.chooseStep(), SoundSource.HOSTILE);
-                timer.resetEventTimer();
-            } else {
-                // TODO Breathing sounds
+            Random rnd = new Random();
+            int rndChoice = rnd.nextInt(3);
+
+            switch (rndChoice) {
+                case 0:
+                    timer.canStep = true;
+                    level.playSound(null, timer.currentVictim.blockPosition(), CaveDwellerEntity.chooseStep(), SoundSource.HOSTILE);
+                    timer.resetEventTimer();
+                    break;
+                case 1:
+                    level.playSound(null, timer.currentVictim.blockPosition(), ModSounds.BREATHING.get(), SoundSource.HOSTILE);
+                    timer.resetEventTimer();
+                    break;
+                case 2:
+                    CaveDweller.LOG.debug("Flickering torches");
+                    int range = ServerConfig.TORCH_EXTINGUISH_RANGE.get();
+
+                    for (int i = 0; i < 40; i++) {
+                        int delay = i * 2;
+                        TASKS.schedule(() ->
+                                        flickerTorches(level, timer.currentVictim.blockPosition(), range),
+                                delay
+                        );
+                    }
+                    timer.resetEventTimer();
+                    break;
             }
+
 
         }
 
@@ -250,6 +279,47 @@ public class CaveDweller {
 
         blowTorches(level, timer.currentVictim.blockPosition(), range);
     }
+
+    public void flickerTorches(ServerLevel level, BlockPos pos, int range) {
+        CaveDweller.LOG.debug("Flickering...");
+        int halfRange = range / 2;
+        BlockPos basePos = pos.offset(-halfRange, -halfRange, -halfRange);
+
+        for (int x = 0; x < range; x++) {
+            for (int y = 0; y < range; y++) {
+                for (int z = 0; z < range; z++) {
+                    BlockPos cur = basePos.offset(x, y, z);
+                    BlockState state = level.getBlockState(cur);
+
+                    BlockState newState = null;
+
+                    // Lit → Unlit
+                    if (state.is(Blocks.TORCH)) {
+                        newState = ModBlocks.BLOWN_TORCH.get().defaultBlockState();
+                    }
+                    else if (state.is(Blocks.WALL_TORCH)) {
+                        newState = ModBlocks.BLOWN_TORCH_WALL.get()
+                                .defaultBlockState()
+                                .setValue(WallTorchBlock.FACING, state.getValue(WallTorchBlock.FACING));
+                    }
+
+                    // Unlit → Lit
+                    else if (state.is(ModBlocks.BLOWN_TORCH.get())) {
+                        newState = Blocks.TORCH.defaultBlockState();
+                    }
+                    else if (state.is(ModBlocks.BLOWN_TORCH_WALL.get())) {
+                        newState = Blocks.WALL_TORCH.defaultBlockState()
+                                .setValue(WallTorchBlock.FACING, state.getValue(WallTorchBlock.FACING));
+                    }
+
+                    if (newState == null) continue;
+
+                    level.setBlock(cur, newState, Block.UPDATE_CLIENTS);
+                }
+            }
+        }
+    }
+
 
     public void blowTorches(ServerLevel level, BlockPos pos, int range) {
         int halfRange = (range/2);

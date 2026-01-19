@@ -124,5 +124,12 @@
     "sounds": [
       "cave_dweller:dweller_hurt_4"
     ]
+  },
+  "breathing": {
+    "subtitle": "sound.cave_dweller:breathing",
+    "sounds": [
+      "cave_dweller:breathing_1",
+      "cave_dweller:breathing_2"
+    ]
   }
 }

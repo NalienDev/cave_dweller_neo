@@ -31,6 +31,7 @@ public class ModSounds {
     public static final RegistryObject<SoundEvent> DWELLER_HURT_3 = registerSoundEvent("dweller_hurt_3");
     public static final RegistryObject<SoundEvent> DWELLER_HURT_4 = registerSoundEvent("dweller_hurt_4");
     public static final RegistryObject<SoundEvent> DWELLER_DEATH = registerSoundEvent("dweller_death");
+    public static final RegistryObject<SoundEvent> BREATHING = registerSoundEvent("breathing");
 
     private static RegistryObject<SoundEvent> registerSoundEvent(final String name) {
         ResourceLocation id = new ResourceLocation(CaveDweller.MODID, name);

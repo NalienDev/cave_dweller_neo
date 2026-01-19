@@ -16,6 +16,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingKnockBackEvent;
@@ -72,6 +73,13 @@ public class ForgeEvents {
     @SubscribeEvent
     public static void handleDimensionChange(final EntityTravelToDimensionEvent event) {
         CaveDweller.RELOAD_MISSING = true;
+    }
+
+    @SubscribeEvent
+    public static void onServerTick(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.END) {
+            CaveDweller.TASKS.tick();
+        }
     }
 
     /** Prevent knockback while climbing */

@@ -7,7 +7,3 @@
 # TODO
 - Jumpscare running towards the player then disappears.
 - Chance to flee when its on fire.
-- Breathing Event
-
-# Needed Sounds
-- Breathing: 1 or 2 sounds
