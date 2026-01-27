@@ -71,6 +71,8 @@ public class ServerConfig {
 
     // New
     public static ForgeConfigSpec.IntValue TORCH_EXTINGUISH_RANGE;
+    public static ForgeConfigSpec.IntValue TORCH_RELIGHT_MIN;
+    public static ForgeConfigSpec.IntValue TORCH_RELIGHT_MAX;
 
     static {
         BUILDER.push("Timers");
@@ -123,6 +125,8 @@ public class ServerConfig {
         ALLOW_RIDING = BUILDER.comment("Allow the Cave Dweller to follow vanilla riding logic (e.g. boats)").define("allow_riding", false);
         TARGET_INVISIBLE = BUILDER.comment("Whether invisible players can be targets or not").define("target_invisible", true);
         TORCH_EXTINGUISH_RANGE = BUILDER.comment("The range from the player that torches will be extinguished").defineInRange("torch_extinguish_range", 40, 5, 100);
+        TORCH_RELIGHT_MIN = BUILDER.comment("Minimum amount of ticks for blown torches to relight").defineInRange("torch_relight_min", 200, 5, 20000);
+        TORCH_RELIGHT_MAX = BUILDER.comment("Maximum amount of ticks for blown torches to relight").defineInRange("torch_relight_max", 400, 5, 20000);
         DISAPPEAR_ON_HIT_CHANCE = BUILDER.comment("The chance the dweller will disappear when chasing and hitting the player (1 in X). 0 disables this").defineInRange("hit_disappear_chance", 4, 1, 100);
         BUILDER.pop();
 

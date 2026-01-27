@@ -20,9 +20,8 @@ public class TransformingTorch extends TorchBlock {
     }
 
     @Override
-    public void randomTick(@NotNull BlockState pState, @NotNull ServerLevel pLevel, @NotNull BlockPos pPos, @NotNull RandomSource pRandom) {
-        super.randomTick(pState, pLevel, pPos, pRandom);
-        CaveDweller.LOG.info("Randomly ticked");
+    public void tick(BlockState pState, ServerLevel pLevel, BlockPos pPos, RandomSource pRandom) {
+        super.tick(pState, pLevel, pPos, pRandom);
         this.transform(pState, pLevel, pPos);
     }
 

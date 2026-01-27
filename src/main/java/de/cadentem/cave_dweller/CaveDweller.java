@@ -330,15 +330,21 @@ public class CaveDweller {
                     BlockPos cur = basePos.offset(x,y,z);
                     BlockState state = level.getBlockState(cur);
                     BlockState newState;
+                    Block block;
                     if ( state.is(Blocks.TORCH) ) {
-                        newState = ModBlocks.BLOWN_TORCH.get().defaultBlockState();
+                        block = ModBlocks.BLOWN_TORCH.get();
+                        newState = block.defaultBlockState();
                     } else if ( state.is(Blocks.WALL_TORCH) ) {
-                        newState = ModBlocks.BLOWN_TORCH_WALL.get().defaultBlockState().setValue(WallTorchBlock.FACING, state.getValue(WallTorchBlock.FACING));
+                        block = ModBlocks.BLOWN_TORCH_WALL.get();
+                        newState = block.defaultBlockState().setValue(WallTorchBlock.FACING, state.getValue(WallTorchBlock.FACING));
                     } else {
                         continue;
                     }
                     level.playSound(null, cur, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS);
                     level.setBlock(cur, newState, 1|2);
+                    int duration = CaveDweller.RANDOM.nextInt(ServerConfig.TORCH_RELIGHT_MIN.get(), ServerConfig.TORCH_RELIGHT_MAX.get());
+                    CaveDweller.LOG.debug("scheduled for {} {} {}", cur, block, duration);
+                    level.scheduleTick(cur, block, duration);
                 }
             }
         }
