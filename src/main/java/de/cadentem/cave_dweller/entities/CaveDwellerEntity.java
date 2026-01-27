@@ -79,7 +79,8 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
     private boolean alreadyPlayedSpottedSound;
     private boolean startedPlayingChaseSound;
     private boolean alreadyPlayedDeathSound;
-    private boolean disappearOnChaseHit;
+    private final boolean disappearOnChaseHit;
+    private final boolean fleeOnFire;
 
     public CaveDwellerEntity(final EntityType<? extends CaveDwellerEntity> entityType, final Level level) {
         super(entityType, level);
@@ -92,13 +93,15 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
         } else {
             this.disappearOnChaseHit = false;
         }
+        int fireFleeChance = ServerConfig.FIRE_FLEE_CHANCE.get();
+        this.fleeOnFire = CaveDweller.RANDOM.nextInt(fireFleeChance) == 0;
     }
 
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
 
-        CaveDweller.LOG.debug("disappear on hit: {}", this.disappearOnChaseHit);
+        CaveDweller.LOG.debug("ADDED! disappear on hit: {}, fire: {}", this.disappearOnChaseHit, this.fleeOnFire);
 
         setAttribute(getAttribute(Attributes.MAX_HEALTH), ServerConfig.MAX_HEALTH.get());
         setAttribute(getAttribute(Attributes.ATTACK_DAMAGE), ServerConfig.ATTACK_DAMAGE.get());
@@ -203,6 +206,10 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
             disappear();
         }
 
+        if ( this.fleeOnFire && this.isOnFire() ) {
+            this.currentRoll = Roll.FLEE;
+            CaveDweller.LOG.debug("RUNNING FIRE!");
+        }
         if (goalSelector.getAvailableGoals().isEmpty() || targetSelector.getAvailableGoals().isEmpty()) {
             registerGoals();
             goalSelector.tick();

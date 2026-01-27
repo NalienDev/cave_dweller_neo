@@ -3,7 +3,7 @@
 - Sometimes gets stuck in walls for a bit
 - Animations
 - Reduce the amount of blockstate gets
+- Doesn't instantly start running when set on fire
 
 # TODO
 - Jumpscare running towards the player then disappears.
-- Chance to flee when its on fire.
