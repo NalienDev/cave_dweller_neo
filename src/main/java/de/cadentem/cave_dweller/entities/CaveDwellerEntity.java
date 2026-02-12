@@ -224,7 +224,6 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
             boolean isAboveSolid = level().getBlockState(blockPosition().above()).isSolid();
             boolean isTwoAboveSolid = level().getBlockState(blockPosition().above(2)).isSolid();
             boolean isThreeAboveSolid = level().getBlockState(blockPosition().above(3)).isSolid();
-            boolean isFourAboveSolid = level().getBlockState(blockPosition().above(4)).isSolid();
 
             Vec3i offset = getDirectionVector();
             boolean isFacingSolid = level().getBlockState(blockPosition().relative(getDirection())).isSolid();
@@ -249,7 +248,7 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
                    o            o           o
                -----        -----       ----o
             */
-            boolean shouldCrouch = isTwoAboveSolid || (!isOffsetFacingSolid && !isOffsetFacingAboveSolid && (isOffsetFacingTwoAboveSolid || (isFacingSolid && isThreeAboveSolid)) || (isFacingSolid && isFourAboveSolid)) ;
+            boolean shouldCrouch = isTwoAboveSolid || (!isOffsetFacingSolid && !isOffsetFacingAboveSolid && (isOffsetFacingTwoAboveSolid || isFacingSolid && isThreeAboveSolid)) ;
 
             /* [- : blocks | o : cave dweller | + : cave dweller in solid block]
                 To handle these variants among other things:
