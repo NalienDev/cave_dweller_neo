@@ -51,6 +51,11 @@ public class CaveDwellerFleeGoal extends Goal {
     }
 
     @Override
+    public boolean requiresUpdateEveryTick() {
+        return true;
+    }
+
+    @Override
     public void tick() {
         LivingEntity target = caveDweller.getTarget();
 

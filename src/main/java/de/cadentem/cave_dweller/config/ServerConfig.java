@@ -57,7 +57,6 @@ public class ServerConfig {
     public static ForgeConfigSpec.BooleanValue ALLOW_RIDING;
     public static ForgeConfigSpec.BooleanValue TARGET_INVISIBLE;
     public static ForgeConfigSpec.IntValue DISAPPEAR_ON_HIT_CHANCE;
-    public static ForgeConfigSpec.IntValue FIRE_FLEE_CHANCE;
 
 
     // Attributes
@@ -129,7 +128,6 @@ public class ServerConfig {
         TORCH_RELIGHT_MIN = BUILDER.comment("Minimum amount of ticks for blown torches to relight").defineInRange("torch_relight_min", 200, 5, 20000);
         TORCH_RELIGHT_MAX = BUILDER.comment("Maximum amount of ticks for blown torches to relight").defineInRange("torch_relight_max", 400, 5, 20000);
         DISAPPEAR_ON_HIT_CHANCE = BUILDER.comment("The chance the dweller will disappear when chasing and hitting the player (1 in X). 0 disables this").defineInRange("hit_disappear_chance", 4, 0, 100);
-        FIRE_FLEE_CHANCE = BUILDER.comment("The chance the dweller will flee when on fire (1 in X)").defineInRange("fire_flee_chance", 2, 1, 1000);
         BUILDER.pop();
 
         BUILDER.push("Attributes");

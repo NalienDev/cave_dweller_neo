@@ -47,6 +47,13 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.List;
 import java.util.Random;
 
+/*
+    TODO:
+    - light flicker tocha na mao
+    - ajustar speed quando n ta agressivo
+    - +1 event (jumpscare ou spawnar longe e dar flicker)
+ */
+
 public class CaveDwellerEntity extends Monster implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
@@ -80,7 +87,6 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
     private boolean startedPlayingChaseSound;
     private boolean alreadyPlayedDeathSound;
     private final boolean disappearOnChaseHit;
-    private final boolean fleeOnFire;
 
     public CaveDwellerEntity(final EntityType<? extends CaveDwellerEntity> entityType, final Level level) {
         super(entityType, level);
@@ -93,15 +99,13 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
         } else {
             this.disappearOnChaseHit = false;
         }
-        int fireFleeChance = ServerConfig.FIRE_FLEE_CHANCE.get();
-        this.fleeOnFire = CaveDweller.RANDOM.nextInt(fireFleeChance) == 0;
     }
 
     @Override
     public void onAddedToWorld() {
         super.onAddedToWorld();
 
-        CaveDweller.LOG.debug("ADDED! disappear on hit: {}, fire: {}", this.disappearOnChaseHit, this.fleeOnFire);
+        CaveDweller.LOG.debug("ADDED! disappear on hit: {}", this.disappearOnChaseHit);
 
         setAttribute(getAttribute(Attributes.MAX_HEALTH), ServerConfig.MAX_HEALTH.get());
         setAttribute(getAttribute(Attributes.ATTACK_DAMAGE), ServerConfig.ATTACK_DAMAGE.get());
@@ -206,7 +210,7 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
             disappear();
         }
 
-        if ( this.fleeOnFire && this.isOnFire() ) {
+        if (this.isOnFire() ) {
             this.currentRoll = Roll.FLEE;
             CaveDweller.LOG.debug("RUNNING FIRE!");
         }
