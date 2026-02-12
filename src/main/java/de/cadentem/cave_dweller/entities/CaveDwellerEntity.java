@@ -49,7 +49,6 @@ import java.util.Random;
 
 /*
     TODO:
-    - light flicker tocha na mao
     - ajustar speed quando n ta agressivo
     - +1 event (jumpscare ou spawnar longe e dar flicker)
  */
