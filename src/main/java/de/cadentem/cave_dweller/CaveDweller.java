@@ -25,6 +25,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.SpawnUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
@@ -280,10 +283,22 @@ public class CaveDweller {
         blowTorches(level, timer.currentVictim.blockPosition(), range);
     }
 
+
     public void flickerTorches(ServerLevel level, BlockPos pos, int range) {
-        CaveDweller.LOG.debug("Flickering...");
+        //CaveDweller.LOG.debug("Flickering...");
         int halfRange = range / 2;
         BlockPos basePos = pos.offset(-halfRange, -halfRange, -halfRange);
+
+        List<ServerPlayer> players = level.getPlayers(player -> player.distanceToSqr(pos.getCenter()) <= range * range);
+
+        if (players.isEmpty()) {
+            LOG.debug("No players found within range");
+        }
+
+
+        for (ServerPlayer player : players) {
+            toggleInventoryTorches(player);
+        }
 
         for (int x = 0; x < range; x++) {
             for (int y = 0; y < range; y++) {
@@ -320,6 +335,22 @@ public class CaveDweller {
         }
     }
 
+    public void toggleInventoryTorches(ServerPlayer player){
+        Inventory pInventory = player.getInventory();
+        for (int i = 0; i < pInventory.getContainerSize(); i++) {
+            ItemStack stack = pInventory.getItem(i);
+            int count = stack.getCount();
+            if (stack.is(Items.TORCH)) {
+                pInventory.setItem(i, new ItemStack(ModItems.BLOWN_TORCH.get(), count));
+                CaveDweller.LOG.debug("Blowing...");
+                continue;
+            }
+            if (stack.is(ModItems.BLOWN_TORCH.get())) {
+                pInventory.setItem(i, new ItemStack(Items.TORCH, count));
+                CaveDweller.LOG.debug("Unblowing...");
+            }
+        }
+    }
 
     public void blowTorches(ServerLevel level, BlockPos pos, int range) {
         int halfRange = (range/2);

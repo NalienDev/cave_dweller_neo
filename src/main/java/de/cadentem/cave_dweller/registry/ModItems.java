@@ -1,6 +1,7 @@
 package de.cadentem.cave_dweller.registry;
 
 import de.cadentem.cave_dweller.CaveDweller;
+import de.cadentem.cave_dweller.item.BlownTorchItem;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeSpawnEggItem;
@@ -14,6 +15,10 @@ public class ModItems {
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, CaveDweller.MODID);
     public static final RegistryObject<Item> CAVE_DWELLER_SPAWN_EGG = ITEMS.register(
             "cave_dweller_spawn_egg", () -> new ForgeSpawnEggItem(ModEntityTypes.CAVE_DWELLER, 12895428, 790333, new Item.Properties())
+    );
+
+    public static final RegistryObject<Item> BLOWN_TORCH = ITEMS.register(
+            "blown_torch", () -> new BlownTorchItem(new Item.Properties())
     );
 
     public static void register(IEventBus eventBus) {
