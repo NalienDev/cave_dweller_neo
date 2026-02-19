@@ -449,12 +449,10 @@ public class CaveDweller {
             int count = stack.getCount();
             if (stack.is(Items.TORCH)) {
                 pInventory.setItem(i, new ItemStack(ModItems.BLOWN_TORCH.get(), count));
-                CaveDweller.LOG.debug("Blowing...");
                 continue;
             }
             if (stack.is(ModItems.BLOWN_TORCH.get())) {
                 pInventory.setItem(i, new ItemStack(Items.TORCH, count));
-                CaveDweller.LOG.debug("Unblowing...");
             }
         }
     }

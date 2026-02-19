@@ -47,11 +47,6 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 import java.util.List;
 import java.util.Random;
 
-/*
-    TODO:
-    - ajustar speed quando n ta agressivo
- */
-
 public class CaveDwellerEntity extends Monster implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 

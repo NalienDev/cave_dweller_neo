@@ -1,84 +1,78 @@
 {
   "cavenoise_1": {
-    "subtitle": "sounds.cave_dweller:cavenoise_1",
     "sounds": [
       "cave_dweller:cavenoise_1"
     ]
   },
   "cavenoise_2": {
-    "subtitle": "sound.cave_dweller:cavenoise_2",
     "sounds": [
       "cave_dweller:cavenoise_2"
     ]
   },
   "cavenoise_3": {
-    "subtitle": "sound.cave_dweller:cavenoise_3",
     "sounds": [
       "cave_dweller:cavenoise_3"
     ]
   },
   "cavenoise_4": {
-    "subtitle": "sound.cave_dweller:cavenoise_4",
     "sounds": [
       "cave_dweller:cavenoise_4"
     ]
   },
   "chase_step_1": {
-    "subtitle": "sound.cave_dweller:chase_step_1",
+    "subtitle": "sound.cave_dweller:chase_step",
     "sounds": [
       "cave_dweller:chase_step_1"
     ]
   },
   "chase_step_2": {
-    "subtitle": "sound.cave_dweller:chase_step_2",
+    "subtitle": "sound.cave_dweller:chase_step",
     "sounds": [
       "cave_dweller:chase_step_2"
     ]
   },
   "chase_step_3": {
-    "subtitle": "sound.cave_dweller:chase_step_3",
+    "subtitle": "sound.cave_dweller:chase_step",
     "sounds": [
       "cave_dweller:chase_step_3"
     ]
   },
   "chase_step_4": {
-    "subtitle": "sound.cave_dweller:chase_step_4",
+    "subtitle": "sound.cave_dweller:chase_step",
     "sounds": [
       "cave_dweller:chase_step_4"
     ]
   },
   "chase_1": {
-    "subtitle": "sound.cave_dweller:chase_1",
+    "subtitle": "sound.cave_dweller:chase",
     "sounds": [
       "cave_dweller:chase_1"
     ]
   },
   "chase_2": {
-    "subtitle": "sound.cave_dweller:chase_2",
+    "subtitle": "sound.cave_dweller:chase",
     "sounds": [
       "cave_dweller:chase_2"
     ]
   },
   "chase_3": {
-    "subtitle": "sound.cave_dweller:chase_3",
+    "subtitle": "sound.cave_dweller:chase",
     "sounds": [
       "cave_dweller:chase_3"
     ]
   },
   "chase_4": {
-    "subtitle": "sound.cave_dweller:chase_4",
+    "subtitle": "sound.cave_dweller:chase",
     "sounds": [
       "cave_dweller:chase_4"
     ]
   },
   "flee_1": {
-    "subtitle": "sound.cave_dweller:flee_1",
     "sounds": [
       "cave_dweller:flee_1"
     ]
   },
   "flee_2": {
-    "subtitle": "sound.cave_dweller:flee_2",
     "sounds": [
       "cave_dweller:flee_2"
     ]
@@ -102,25 +96,25 @@
     ]
   },
   "dweller_hurt_1": {
-    "subtitle": "sound.cave_dweller:dweller_hurt_1",
+    "subtitle": "sound.cave_dweller:dweller_hurt",
     "sounds": [
       "cave_dweller:dweller_hurt_1"
     ]
   },
   "dweller_hurt_2": {
-    "subtitle": "sound.cave_dweller:dweller_hurt_2",
+    "subtitle": "sound.cave_dweller:dweller_hurt",
     "sounds": [
       "cave_dweller:dweller_hurt_2"
     ]
   },
   "dweller_hurt_3": {
-    "subtitle": "sound.cave_dweller:dweller_hurt_3",
+    "subtitle": "sound.cave_dweller:dweller_hurt",
     "sounds": [
       "cave_dweller:dweller_hurt_3"
     ]
   },
   "dweller_hurt_4": {
-    "subtitle": "sound.cave_dweller:dweller_hurt_4",
+    "subtitle": "sound.cave_dweller:dweller_hurt",
     "sounds": [
       "cave_dweller:dweller_hurt_4"
     ]
