@@ -128,4 +128,26 @@ public class Utils {
 
         return Optional.empty();
     }
+    public static Optional<CaveDwellerEntity> trySpawnStaticMob(final EntityType<CaveDwellerEntity> entityType, final MobSpawnType spawnType, final ServerLevel level, final BlockPos blockPosition) {
+        if (!level.getWorldBorder().isWithinBounds(blockPosition)) {
+            return Optional.empty();
+        }
+
+        CaveDwellerEntity entity = entityType.create(level, null, null, blockPosition, spawnType, false, false);
+
+        if (entity == null) {
+            return Optional.empty();
+        }
+
+        if (entity.checkSpawnObstruction(level)) {
+            entity.getNavigation().stop();
+            level.addFreshEntityWithPassengers(entity);
+            CaveDweller.LOG.debug("Static spawn succeeded at {}", blockPosition);
+            return Optional.of(entity);
+        }
+
+        entity.discard();
+        CaveDweller.LOG.debug("Static spawn failed obstruction check at {}", blockPosition);
+        return Optional.empty();
+    }
 }

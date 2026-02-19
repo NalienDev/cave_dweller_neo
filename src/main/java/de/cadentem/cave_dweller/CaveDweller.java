@@ -26,8 +26,10 @@ import net.minecraft.util.SpawnUtil;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.block.Block;
@@ -35,6 +37,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.WallTorchBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.lighting.LayerLightEventListener;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -193,7 +198,8 @@ public class CaveDweller {
                     playCaveSoundToSpelunkers(players, timer);
                     timer.resetNoiseTimer();
                 } else {
-                    // TODO Jumpscare
+                    lookFromFarAwayEvent(players, timer);
+                    timer.resetNoiseTimer();
                 }
             }
         }
@@ -251,6 +257,107 @@ public class CaveDweller {
             }
         }
 
+    }
+
+    private void lookFromFarAwayEvent(final List<ServerPlayer> players, final Timer timer) {
+        if (players.isEmpty()) return;
+
+        Player player = players.get(new Random().nextInt(players.size()));
+        if (player == null) return;
+
+        // Only run underground
+        if (Utils.isOnSurface(player)) {
+            CaveDweller.LOG.debug("lookFromFarAwayEvent: player is on surface, skipping");
+            return;
+        }
+
+        ServerLevel level = (ServerLevel) player.level();
+        BlockPos playerPos = player.blockPosition();
+        BlockPos spawnPos = null;
+
+        Random rnd = new Random();
+
+        for (int attempt = 0; attempt < 30; attempt++) {
+            double angle = rnd.nextDouble() * Math.PI * 2;
+            int distance = 30 + rnd.nextInt(20); // 30-50 blocks away
+
+            int dx = (int) (Math.cos(angle) * distance);
+            int dz = (int) (Math.sin(angle) * distance);
+
+            int x = playerPos.getX() + dx;
+            int z = playerPos.getZ() + dz;
+
+            // Search for an open 2-tall space near the player's Y level
+            for (int dy = -10; dy <= 10; dy++) {
+                int y = playerPos.getY() + dy;
+                BlockPos feet = new BlockPos(x, y, z);
+                BlockPos head = feet.above();
+                BlockPos ground = feet.below();
+
+                boolean feetOpen = !level.getBlockState(feet).isSolid();
+                boolean headOpen = !level.getBlockState(head).isSolid();
+                boolean hasGround = level.getBlockState(ground).isSolid();
+
+                if (feetOpen && headOpen && hasGround) {
+                    // Check line of sight: trace from candidate position to player eyes
+                    // We use several points on the dweller's body to increase the chance of finding a visible spot
+                    Vec3 dwellerEye = new Vec3(feet.getX() + 0.5, feet.getY() + 1.6, feet.getZ() + 0.5);
+                    Vec3 playerEye = player.getEyePosition(1.0F);
+
+                    ClipContext clipContext = new ClipContext(dwellerEye, playerEye, ClipContext.Block.VISUAL, ClipContext.Fluid.NONE, null);
+                    BlockHitResult result = level.clip(clipContext);
+
+                    if (result.getType() == HitResult.Type.MISS) {
+                        spawnPos = feet;
+                        break;
+                    }
+                }
+            }
+
+            if (spawnPos != null) break;
+        }
+
+        if (spawnPos == null) {
+            CaveDweller.LOG.debug("lookFromFarAwayEvent: could not find valid spawn position after 30 attempts");
+            return;
+        }
+
+        final BlockPos finalSpawnPos = spawnPos;
+
+        Optional<CaveDwellerEntity> optionalEntity = Utils.trySpawnStaticMob(
+                ModEntityTypes.CAVE_DWELLER.get(),
+                MobSpawnType.TRIGGERED,
+                level,
+                finalSpawnPos
+        );
+
+        if (optionalEntity.isEmpty()) {
+            CaveDweller.LOG.debug("lookFromFarAwayEvent: failed to spawn cave dweller");
+            return;
+        }
+
+        CaveDwellerEntity caveDweller = optionalEntity.get();
+        caveDweller.setNoAi(true);
+        caveDweller.pleaseStopMoving = true;
+
+        // Face toward the player
+        double ddx = player.getX() - caveDweller.getX();
+        double ddz = player.getZ() - caveDweller.getZ();
+        float yRot = (float) (Math.atan2(ddz, ddx) * (180.0 / Math.PI)) - 90.0F;
+        caveDweller.setYRot(yRot);
+        caveDweller.yRotO = yRot;
+        caveDweller.setYBodyRot(yRot);
+        caveDweller.setYHeadRot(yRot);
+
+        // Stand still, then disappear
+        int standDuration = Utils.secondsToTicks(ServerConfig.STALK_EVENT_TIME_VISIBLE.get());
+        TASKS.schedule(() -> {
+            if (caveDweller.isAlive()) {
+                caveDweller.disappear();
+            }
+        }, standDuration);
+
+        CaveDweller.LOG.debug("lookFromFarAwayEvent: spawned at {} facing player, despawning in {}s", finalSpawnPos, standDuration / 20);
     }
 
     private void playCaveSoundToSpelunkers(final List<ServerPlayer> players, final Timer timer) {

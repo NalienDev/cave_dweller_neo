@@ -50,7 +50,6 @@ import java.util.Random;
 /*
     TODO:
     - ajustar speed quando n ta agressivo
-    - +1 event (jumpscare ou spawnar longe e dar flicker)
  */
 
 public class CaveDwellerEntity extends Monster implements GeoEntity {

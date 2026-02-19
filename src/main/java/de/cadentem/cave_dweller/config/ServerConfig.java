@@ -31,6 +31,7 @@ public class ServerConfig {
     public static ForgeConfigSpec.IntValue TIME_UNTIL_LEAVE_CHASE;
     // Other
     public static ForgeConfigSpec.DoubleValue SURFACE_TIMER_MULTIPLIER;
+    public static ForgeConfigSpec.IntValue STALK_EVENT_TIME_VISIBLE;
 
     // Spawn Conditions
     public static ForgeConfigSpec.DoubleValue SPAWN_CHANCE_PER_TICK;
@@ -95,6 +96,7 @@ public class ServerConfig {
         TIME_UNTIL_LEAVE_CHASE = BUILDER.comment("Time (in seconds) it takes for the Cave Dweller to leave once a chase begins").defineInRange("time_until_leave_chase", 30, 1, 600);
         BUILDER.pop();
         SURFACE_TIMER_MULTIPLIER = BUILDER.comment("Modify the timers for the surface (to reduce or increase them), based on the general timer set (e.g. spawn timer of 300 seconds -> 0.3 turns it into 90 seconds and 1.7 turns it into 510 seconds for the surface)").defineInRange("surface_timer_multiplier", 1.0, 0, 5.0);
+        STALK_EVENT_TIME_VISIBLE = BUILDER.comment("Time (in seconds) the Cave Dweller is visible during the stalk event").defineInRange("stalk_event_time_visible", 7, 1, 30);
         BUILDER.pop();
 
         BUILDER.push("Spawn Conditions");
