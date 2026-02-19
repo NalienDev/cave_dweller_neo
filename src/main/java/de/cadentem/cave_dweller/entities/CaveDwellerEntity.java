@@ -112,7 +112,7 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
         setAttribute(getAttribute(ForgeMod.STEP_HEIGHT_ADDITION.get()), 0.4); // LivingEntity default is 0.6
     }
 
-    private void setAttribute(final AttributeInstance attribute, double newValue) {
+    public void setAttribute(final AttributeInstance attribute, double newValue) {
         if (attribute != null) {
             double baseValue = attribute.getBaseValue();
             float difference = (float) (newValue - baseValue);
@@ -150,6 +150,11 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
         entityData.define(CRAWLING_ACCESSOR, false);
         entityData.define(SPOTTED_ACCESSOR, false);
         entityData.define(CLIMBING_ACCESSOR, false);
+    }
+
+    @Override
+    public boolean isSprinting() {
+        return super.isSprinting();
     }
 
     @Override
@@ -206,6 +211,7 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
 
         if (ticksTillRemove <= 0) {
             disappear();
+            return;
         }
 
         if (this.isOnFire() ) {
