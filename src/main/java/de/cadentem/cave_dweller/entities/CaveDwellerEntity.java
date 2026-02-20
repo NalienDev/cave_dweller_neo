@@ -161,7 +161,7 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
         if (ServerConfig.CAN_BREAK_DOOR.get()) { // TODO :: Remove for already spawned entities on config change?
             goalSelector.addGoal(2, new CaveDwellerBreakDoorGoal(this, difficulty -> true));
         }
-        goalSelector.addGoal(3, new CaveDwellerStrollGoal(this, 0.35));
+        goalSelector.addGoal(3, new CaveDwellerStrollGoal(this, 0.45));
         targetSelector.addGoal(0, new CustomHurtByTargetGoal(this));
         targetSelector.addGoal(1, new CaveDwellerTargetTooCloseGoal(this, 12));
         targetSelector.addGoal(2, new CaveDwellerTargetSeesMeGoal(this));
