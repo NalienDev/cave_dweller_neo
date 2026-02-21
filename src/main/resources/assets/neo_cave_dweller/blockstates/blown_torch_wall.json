@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "neo_cave_dweller:block/blown_torch_wall"
+    },
+    "facing=north": {
+      "model": "neo_cave_dweller:block/blown_torch_wall",
+      "y": 270
+    },
+    "facing=south": {
+      "model": "neo_cave_dweller:block/blown_torch_wall",
+      "y": 90
+    },
+    "facing=west": {
+      "model": "neo_cave_dweller:block/blown_torch_wall",
+      "y": 180
+    }
+  }
+}
