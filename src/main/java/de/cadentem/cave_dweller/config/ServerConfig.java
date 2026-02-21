@@ -78,10 +78,10 @@ public class ServerConfig {
     static {
         BUILDER.push("Timers");
         BUILDER.push("Spawn");
-        CAN_SPAWN_MIN = BUILDER.comment("Minimum time between spawns in seconds").defineInRange("can_spawn_min", 300, 0, 60 * 60 * 24);
-        CAN_SPAWN_MAX = BUILDER.comment("Maximum time between spawns in seconds").defineInRange("can_spawn_max", 600, 0, 60 * 60 * 24);
+        CAN_SPAWN_MIN = BUILDER.comment("Minimum time between spawns in seconds").defineInRange("can_spawn_min", 180, 0, 60 * 60 * 24);
+        CAN_SPAWN_MAX = BUILDER.comment("Maximum time between spawns in seconds").defineInRange("can_spawn_max", 300, 0, 60 * 60 * 24);
         CAN_SPAWN_COOLDOWN_CHANCE = BUILDER.comment("Chance for a spawn cooldown to occur").defineInRange("can_spawn_cooldown_chance", 0.4, 0, 1);
-        CAN_SPAWN_COOLDOWN = BUILDER.comment("Spawn cooldown length in seconds").defineInRange("can_spawn_cooldown", 1200, 0, 60 * 60 * 24);
+        CAN_SPAWN_COOLDOWN = BUILDER.comment("Spawn cooldown length in seconds").defineInRange("can_spawn_cooldown", 700, 0, 60 * 60 * 24);
         BUILDER.pop();
         BUILDER.push("Noise");
         RESET_NOISE_MIN = BUILDER.comment("Minimum time between noise occurrences in seconds").defineInRange("reset_noise_min", 240, 0, 60 * 60 * 24);
@@ -92,20 +92,20 @@ public class ServerConfig {
         RESET_EVENT_MAX = BUILDER.comment("Maximum time between events in seconds").defineInRange("reset_event_max", 360, 0, 60*60*24);
         BUILDER.pop();
         BUILDER.push("Leave");
-        TIME_UNTIL_LEAVE = BUILDER.comment("Time (in seconds) it takes for the Cave Dweller to leave").defineInRange("time_until_leave", 300, 1, 6000);
-        TIME_UNTIL_LEAVE_CHASE = BUILDER.comment("Time (in seconds) it takes for the Cave Dweller to leave once a chase begins").defineInRange("time_until_leave_chase", 30, 1, 600);
+        TIME_UNTIL_LEAVE = BUILDER.comment("Time (in seconds) it takes for the Cave Dweller to leave").defineInRange("time_until_leave", 113, 1, 6000);
+        TIME_UNTIL_LEAVE_CHASE = BUILDER.comment("Time (in seconds) it takes for the Cave Dweller to leave once a chase begins").defineInRange("time_until_leave_chase", 18, 1, 600);
         BUILDER.pop();
         SURFACE_TIMER_MULTIPLIER = BUILDER.comment("Modify the timers for the surface (to reduce or increase them), based on the general timer set (e.g. spawn timer of 300 seconds -> 0.3 turns it into 90 seconds and 1.7 turns it into 510 seconds for the surface)").defineInRange("surface_timer_multiplier", 1.0, 0, 5.0);
         STALK_EVENT_TIME_VISIBLE = BUILDER.comment("Time (in seconds) the Cave Dweller is visible during the stalk event").defineInRange("stalk_event_time_visible", 7, 1, 30);
         BUILDER.pop();
 
         BUILDER.push("Spawn Conditions");
-        SPAWN_CHANCE_PER_TICK = BUILDER.comment("The spawn chance per tick (once the spawn timer is finished)").defineInRange("spawn_chance_per_tick", 0.005, 0, 1);
-        SPAWN_HEIGHT = BUILDER.comment("Depth at which the Cave Dweller can start to spawn").define("spawn_height", 40);
+        SPAWN_CHANCE_PER_TICK = BUILDER.comment("The spawn chance per tick (once the spawn timer is finished)").defineInRange("spawn_chance_per_tick", 0.05, 0, 1);
+        SPAWN_HEIGHT = BUILDER.comment("Depth at which the Cave Dweller can start to spawn").define("spawn_height", 900);
         ALLOW_SURFACE_SPAWN = BUILDER.comment("Whether the Cave Dweller can spawn on the surface or not").define("allow_surface_spawn", false);
-        SKY_LIGHT_LEVEL = BUILDER.comment("The maximum sky light level the Cave Dweller can spawn at").defineInRange("sky_light_level", 8, 0, 15);
+        SKY_LIGHT_LEVEL = BUILDER.comment("The maximum sky light level the Cave Dweller can spawn at").defineInRange("sky_light_level", 15, 0, 15);
         BLOCK_LIGHT_LEVEL = BUILDER.comment("The maximum block light level the Cave Dweller can spawn at").defineInRange("block_light_level", 15, 0, 15);
-        MAXIMUM_AMOUNT = BUILDER.comment("The maximum amount of cave dwellers which can exist at the same time").defineInRange("maximum_amount", 3, 0, 100);
+        MAXIMUM_AMOUNT = BUILDER.comment("The maximum amount of cave dwellers which can exist at the same time").defineInRange("maximum_amount", 1, 0, 100);
         SPAWN_DISTANCE = BUILDER.comment("How close to players the cave dweller is allowed to spawn (in blocks)").defineInRange("spawn_distance", 16, 0, 64);
         CHECK_PATH_TO_SPAWN = BUILDER.comment("If set to true the cave dweller will try to find a spawn position with a possible path to the player").define("check_path_to_spawn", true);
         BUILDER.push("Dimensions");
@@ -120,7 +120,7 @@ public class ServerConfig {
 
         BUILDER.push("Behaviour");
         SPOTTING_RANGE = BUILDER.comment("The distance in blocks at which the Cave Dweller can detect whether a player is looking at it or not").defineInRange("spotting_range", 60, 0, 128);
-        CAN_DISABLE_SHIELDS = BUILDER.comment("Whether it can disable shields or not").define("can_disable_shields", false);
+        CAN_DISABLE_SHIELDS = BUILDER.comment("Whether it can disable shields or not").define("can_disable_shields", true);
         CAN_CLIMB = BUILDER.comment("Whether the cave dweller can climb or not").define("can_climb", true);
         CAN_BREAK_DOOR = BUILDER.comment("Whether the cave dweller can break down doors or not").define("can_break_door", true);
         BREAK_DOOR_TIME = BUILDER.comment("Time (in seconds) it takes the Cave Dweller to break down a door").defineInRange("break_door_time", 3, 1, 60);
@@ -133,7 +133,7 @@ public class ServerConfig {
         BUILDER.pop();
 
         BUILDER.push("Attributes");
-        MAX_HEALTH = BUILDER.comment("Maximum health").defineInRange("maximum_health", 60.0, 1, 100_000);
+        MAX_HEALTH = BUILDER.comment("Maximum health").defineInRange("maximum_health", 500.0, 1, 100_000);
         ATTACK_DAMAGE = BUILDER.comment("Attack damage").defineInRange("attack_damage", 6.0, 0, 1_000);
         ATTACK_SPEED = BUILDER.comment("Attack speed").defineInRange("attack_speed", 0.35, 0, 10);
         MOVEMENT_SPEED = BUILDER.comment("Movement speed").defineInRange("movement_speed", 0.5, 0, 5);
