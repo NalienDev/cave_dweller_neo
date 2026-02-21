@@ -206,7 +206,14 @@ public class CaveDweller {
 
         if ( (timer.currentEventTimeReached() && timer.currentVictim != null) ) {
             Random rnd = new Random();
-            int rndChoice = rnd.nextInt(3);
+
+            int rndChoice;
+
+            if (ServerConfig.FLICKER_TORCHES_ENABLED.get()){
+                rndChoice = rnd.nextInt(3);
+            } else {
+                rndChoice = rnd.nextInt(2);
+            }
 
             switch (rndChoice) {
                 case 0:
