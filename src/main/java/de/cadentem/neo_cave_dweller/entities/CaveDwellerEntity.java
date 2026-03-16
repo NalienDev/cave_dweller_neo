@@ -350,7 +350,12 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
     }
 
     private PlayState predicate(final AnimationState<CaveDwellerEntity> state) {
-        if ( this.isClimbing() ) {
+        boolean isAnimClimbing = ServerConfig.CAN_CLIMB.get()
+                && entityData.get(CLIMBING_ACCESSOR)
+                && !isCrawling()
+                && !isCrouching();
+
+        if (isAnimClimbing) {
             return state.setAndContinue(CLIMB_ANIM);
         }
         boolean isCurrentAboveSolid = level().getBlockState(blockPosition().above()).isSolid();
