@@ -50,15 +50,16 @@ import java.util.Random;
 public class CaveDwellerEntity extends Monster implements GeoEntity {
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    private final RawAnimation CHASE = RawAnimation.begin().then("animation.cave_dweller.new_run", LoopType.LOOP);
-    private final RawAnimation CHASE_IDLE = RawAnimation.begin().then("animation.cave_dweller.run_idle", LoopType.LOOP);
-    private final RawAnimation CROUCH_RUN = RawAnimation.begin().then("animation.cave_dweller.crouch_run_new", LoopType.LOOP);
-    private final RawAnimation CROUCH_IDLE = RawAnimation.begin().then("animation.cave_dweller.crouch_idle", LoopType.LOOP);
-    private final RawAnimation CALM_RUN = RawAnimation.begin().then("animation.cave_dweller.calm_move", LoopType.LOOP);
-    private final RawAnimation CALM_STILL = RawAnimation.begin().then("animation.cave_dweller.calm_idle", LoopType.LOOP);
-    private final RawAnimation IS_SPOTTED = RawAnimation.begin().then("animation.cave_dweller.spotted", LoopType.HOLD_ON_LAST_FRAME);
-    private final RawAnimation CRAWL = RawAnimation.begin().then("animation.cave_dweller.crawl", LoopType.LOOP);
-    private final RawAnimation FLEE = RawAnimation.begin().then("animation.cave_dweller.flee", LoopType.LOOP);
+    private static final RawAnimation CHASE = RawAnimation.begin().then("animation.cave_dweller.new_run", LoopType.LOOP);
+    private static final RawAnimation CHASE_IDLE = RawAnimation.begin().then("animation.cave_dweller.run_idle", LoopType.LOOP);
+    private static final RawAnimation CROUCH_RUN = RawAnimation.begin().then("animation.cave_dweller.crouch_run_new", LoopType.LOOP);
+    private static final RawAnimation CROUCH_IDLE = RawAnimation.begin().then("animation.cave_dweller.crouch_idle", LoopType.LOOP);
+    private static final RawAnimation CALM_RUN = RawAnimation.begin().then("animation.cave_dweller.calm_move", LoopType.LOOP);
+    private static final RawAnimation CALM_IDLE = RawAnimation.begin().then("animation.cave_dweller.calm_idle", LoopType.LOOP);
+    private static final RawAnimation IS_SPOTTED = RawAnimation.begin().then("animation.cave_dweller.spotted", LoopType.HOLD_ON_LAST_FRAME);
+    private static final RawAnimation CRAWL = RawAnimation.begin().then("animation.cave_dweller.crawl", LoopType.LOOP);
+    private static final RawAnimation FLEE = RawAnimation.begin().then("animation.cave_dweller.flee", LoopType.LOOP);
+    private static final RawAnimation CLIMB_ANIM = RawAnimation.begin().then("animation.cave_dweller.climb", LoopType.LOOP);
 
     public static final EntityDataAccessor<Boolean> FLEEING_ACCESSOR = SynchedEntityData.defineId(CaveDwellerEntity.class, EntityDataSerializers.BOOLEAN);
     public static final EntityDataAccessor<Boolean> CROUCHING_ACCESSOR = SynchedEntityData.defineId(CaveDwellerEntity.class, EntityDataSerializers.BOOLEAN);
@@ -349,6 +350,9 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
     }
 
     private PlayState predicate(final AnimationState<CaveDwellerEntity> state) {
+        if ( this.isClimbing() ) {
+            return state.setAndContinue(CLIMB_ANIM);
+        }
         boolean isCurrentAboveSolid = level().getBlockState(blockPosition().above()).isSolid();
         boolean unsure = isCrawling() && level().getBlockState(blockPosition()).isSolid();
 //        boolean isFacingAboveSolid = isCrawling() && level.getBlockState(blockPosition().offset(getDirectionVector()).above()).getMaterial().isSolid();
@@ -388,7 +392,7 @@ public class CaveDwellerEntity extends Monster implements GeoEntity {
             if (state.isMoving()) {
                 return state.setAndContinue(CALM_RUN);
             } else {
-                return state.setAndContinue(CALM_STILL);
+                return state.setAndContinue(CALM_IDLE);
             }
         }
     }
