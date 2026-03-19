@@ -2,6 +2,6 @@
   "parent": "minecraft:block/template_torch",
   "render_type": "minecraft:cutout",
   "textures": {
-    "torch": "cave_dweller:block/blown_torch"
+    "torch": "neo_cave_dweller:block/cinder_torch"
   }
 }
