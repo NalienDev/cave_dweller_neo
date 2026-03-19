@@ -1,0 +1,12 @@
+{
+  "item.evolved_dweller.cave_dweller_spawn_egg": "Evolved Dweller Spawn Egg",
+  "item.evolved_dweller.blown_torch": "Blown Torch",
+  "entity.evolved_dweller.cave_dweller": "Evolved Dweller",
+  "sound.cave_dweller:dweller_hurt": "Evolved Dweller Hurt",
+  "sound.cave_dweller:breathing": "Evolved Dweller Breathing",
+  "sound.cave_dweller:dweller_death": "Evolved Dweller dies",
+  "sound.cave_dweller:spotted": "Evolved Dweller Spotted",
+  "sound.cave_dweller:disappear": "Evolved Dweller Disappears",
+  "sound.cave_dweller:chase" : "Evolved Dweller Growls",
+  "sound.cave_dweller:chase_step" : "Evolved Dweller Steps"
+}
